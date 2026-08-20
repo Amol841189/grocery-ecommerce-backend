@@ -3,6 +3,7 @@ package com.app.grocery.entity;
 public enum OrderStatus {
 
     PAYMENT_PENDING,
+    PAYMENT_FAILED,
     CONFIRMED,
     PROCESSING,
     OUT_FOR_DELIVERY,
