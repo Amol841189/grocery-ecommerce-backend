@@ -131,9 +131,28 @@ public class OrderService {
                         // AVAILABLE STOCK
                         // -----------------------------------------
 
-                        int availableQuantity = product.getInventory().getQuantity()
-                                        - product.getInventory().getReservedQuantity();
+                        int currentQty = product.getInventory().getQuantity();
+                        int reservedQty = product.getInventory().getReservedQuantity();
 
+                        if (currentQty < 0 || reservedQty < 0) {
+                                throw new IllegalStateException(
+                                                "Invalid inventory for product: "
+                                                                + product.getProductId());
+                        }
+
+                        int availableQuantity = currentQty - reservedQty;
+
+                        if (availableQuantity < 0) {
+                                throw new IllegalStateException(
+                                                "Invalid inventory reservation for product: "
+                                                                + product.getProductId());
+                        }
+
+                        if (availableQuantity == 0) {
+                                throw new InsufficientStockException(
+                                                "Product is out of stock: "
+                                                                + product.getProductId());
+                        }
                         int requestedQuantity = cartItem.getQuantity();
 
                         // -----------------------------------------
@@ -193,7 +212,7 @@ public class OrderService {
 
                 return buildOrderResponse(savedOrder);
         }
-        
+
         // =====================================================
         // EFFECTIVE PRICE
         // =====================================================
