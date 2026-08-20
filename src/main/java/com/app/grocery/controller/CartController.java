@@ -2,8 +2,11 @@ package com.app.grocery.controller;
 
 import com.app.grocery.dto.AddToCartRequest;
 import com.app.grocery.dto.CartResponse;
+import com.app.grocery.dto.CreateCartRequest;
 import com.app.grocery.dto.UpdateCartItemRequest;
 import com.app.grocery.service.CartService;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,29 +25,39 @@ public class CartController {
   // =====================================================
 
   @PostMapping
-  public ResponseEntity<CartResponse> createCart() {
-    return ResponseEntity.ok(cartService.createCart());
+  public ResponseEntity<CartResponse> createCart(@RequestBody CreateCartRequest request) {
+    return ResponseEntity
+        .status(HttpStatus.CREATED)
+        .body(cartService.createCart(request.userId()));
   }
 
   // =====================================================
   // GET CART
   // =====================================================
 
-  @GetMapping("/{cartId}")
-  public ResponseEntity<CartResponse> getCart(@PathVariable String cartId) {
-    return ResponseEntity.ok(cartService.getCart(cartId));
+  @GetMapping("/cid/{cartId}")
+  public ResponseEntity<CartResponse> getCartByCartId(@PathVariable String cartId) {
+    return ResponseEntity.ok(cartService.getCartByCartId(cartId));
+  }
+
+  @GetMapping("/uid/{userId}")
+  public ResponseEntity<CartResponse> getCartByUserId(@PathVariable String userId) {
+    return ResponseEntity.ok(cartService.getCartByCartId(userId));
   }
 
   // =====================================================
   // ADD PRODUCT
   // =====================================================
 
-  @PostMapping("/{cartId}/items")
+  @PostMapping("/items")
   public ResponseEntity<CartResponse> addToCart(
-    @PathVariable String cartId,
-    @RequestBody AddToCartRequest request
+      @RequestParam String userId,
+      @RequestBody AddToCartRequest request
   ) {
-    return ResponseEntity.ok(cartService.addToCart(cartId, request));
+
+      return ResponseEntity.ok(
+          cartService.addToCart(userId, request)
+      );
   }
 
   // =====================================================

@@ -18,24 +18,36 @@ import lombok.*;
 @Builder
 public class Cart {
 
-  @Id
-  @Column(name = "cart_id", nullable = false, unique = true, length = 40)
-  private String cartId;
+    @Id
+    @Column(name = "cart_id", nullable = false, unique = true, length = 40)
+    private String cartId;
 
-  // =====================================================
-  // CART ITEMS
-  // =====================================================
+    // =====================================================
+    // USER
+    // =====================================================
 
-  @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<CartItem> items = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-  // =====================================================
-  // AUDIT
-  // =====================================================
+    // =====================================================
+    // CART ITEMS
+    // =====================================================
 
-  @Column(nullable = false, updatable = false)
-  private LocalDateTime createdAt;
+    @OneToMany(
+        mappedBy = "cart",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true
+    )
+    private List<CartItem> items = new ArrayList<>();
 
-  @Column(nullable = false)
-  private LocalDateTime updatedAt;
+    // =====================================================
+    // AUDIT
+    // =====================================================
+
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
 }
