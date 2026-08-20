@@ -7,16 +7,20 @@ import com.app.grocery.dto.UpdateCartItemRequest;
 import com.app.grocery.entity.Cart;
 import com.app.grocery.entity.CartItem;
 import com.app.grocery.entity.Product;
+import com.app.grocery.entity.User;
 import com.app.grocery.exception.InsufficientStockException;
 import com.app.grocery.exception.ResourceNotFoundException;
 import com.app.grocery.exception.ValidationException;
 import com.app.grocery.repository.CartItemRepository;
 import com.app.grocery.repository.CartRepository;
+import com.app.grocery.repository.UserRepository;
 import com.app.grocery.repository.ProductRepository;
 import com.app.grocery.util.CartIdGenerator;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,13 +32,16 @@ public class CartService {
   private final CartItemRepository cartItemRepository;
 
   private final ProductRepository productRepository;
+  
+  private final UserRepository userRepository;
 
   public CartService(
-    CartRepository cartRepository,
-    CartItemRepository cartItemRepository,
-    ProductRepository productRepository
-  ) {
+      CartRepository cartRepository,
+      UserRepository userRepository,
+      CartItemRepository cartItemRepository,
+      ProductRepository productRepository) {
     this.cartRepository = cartRepository;
+    this.userRepository = userRepository;
     this.cartItemRepository = cartItemRepository;
     this.productRepository = productRepository;
   }
@@ -42,32 +49,67 @@ public class CartService {
   // =====================================================
   // CREATE CART
   // =====================================================
+@Transactional
+public CartResponse createCart(String userId) {
 
-  @Transactional
-  public CartResponse createCart() {
+    // ---------------------------------------------
+    // USER
+    // ---------------------------------------------
+
+    User user = userRepository
+        .findById(userId)
+        .orElseThrow(() ->
+            new ResourceNotFoundException(
+                "User not found: " + userId
+            )
+        );
+
+    // ---------------------------------------------
+    // CHECK EXISTING CART
+    // ---------------------------------------------
+
+    Optional<Cart> existingCart = cartRepository.findByUser_UserId(userId);
+
+    if (existingCart.isPresent()) {
+        return buildCartResponse(existingCart.get());
+    }
+
+    // ---------------------------------------------
+    // CREATE CART
+    // ---------------------------------------------
+
     LocalDateTime now = LocalDateTime.now();
 
-    Cart cart = Cart
-      .builder()
-      .cartId(CartIdGenerator.generate())
-      .createdAt(now)
-      .updatedAt(now)
-      .build();
+    Cart cart = Cart.builder()
+        .cartId(CartIdGenerator.generate())
+        .user(user)
+        .createdAt(now)
+        .updatedAt(now)
+        .build();
 
     Cart savedCart = cartRepository.save(cart);
 
     return buildCartResponse(savedCart);
-  }
+}
 
   // =====================================================
   // GET CART
   // =====================================================
 
   @Transactional(readOnly = true)
-  public CartResponse getCart(String cartId) {
+  public CartResponse getCartByCartId(String cartId) {
     Cart cart = cartRepository
-      .findById(cartId)
-      .orElseThrow(() -> new ResourceNotFoundException("Cart not found: " + cartId));
+        .findById(cartId)
+        .orElseThrow(() -> new ResourceNotFoundException("Cart not found: " + cartId));
+
+    return buildCartResponse(cart);
+  }
+
+  @Transactional(readOnly = true)
+  public CartResponse getCartByUserId(String userId) {
+    Cart cart = cartRepository
+        .findByUser_UserId(userId)
+        .orElseThrow(() -> new ResourceNotFoundException("Cart not found with UserId: " + userId));
 
     return buildCartResponse(cart);
   }
@@ -77,16 +119,22 @@ public class CartService {
   // =====================================================
 
   @Transactional
-  public CartResponse addToCart(String cartId, AddToCartRequest request) {
+  public CartResponse addToCart(
+      String userId,
+      AddToCartRequest request) {
+        
+    
+    // ---------------------------------------------
+    // VALIDATION
+    // ---------------------------------------------
     if (request.getProductId() == null || request.getProductId().isBlank()) {
       throw new ValidationException("Product ID is required");
     }
 
     if (request.getQuantity() == null || request.getQuantity() <= 0) {
       throw new ValidationException(
-        "Quantity must be greater than zero for product ID: "
-        + request.getProductId()
-      );
+          "Quantity must be greater than zero for product ID: " +
+              request.getProductId());
     }
 
     // ---------------------------------------------
@@ -94,18 +142,21 @@ public class CartService {
     // ---------------------------------------------
 
     Cart cart = cartRepository
-      .findById(cartId)
-      .orElseThrow(() -> new ResourceNotFoundException("Cart not found: " + cartId));
+              .findByUser_UserId(userId)
+              .orElseThrow(() ->
+                  new ResourceNotFoundException(
+                      "Cart not found for user: " + userId
+                  )
+              );
 
     // ---------------------------------------------
     // PRODUCT
     // ---------------------------------------------
 
     Product product = productRepository
-      .findById(request.getProductId())
-      .orElseThrow(() ->
-        new ResourceNotFoundException("Product not found: " + request.getProductId())
-      );
+        .findById(request.getProductId())
+        .orElseThrow(() -> new ResourceNotFoundException(
+            "Product not found: " + request.getProductId()));
 
     // ---------------------------------------------
     // CHECK ACTIVE
@@ -123,17 +174,16 @@ public class CartService {
       throw new ResourceNotFoundException("Product inventory not available");
     }
 
-    int availableQuantity =
-      product.getInventory().getQuantity() -
-      product.getInventory().getReservedQuantity();
+    int availableQuantity = product.getInventory().getQuantity() -
+        product.getInventory().getReservedQuantity();
 
     // ---------------------------------------------
     // EXISTING CART ITEM
     // ---------------------------------------------
 
     CartItem cartItem = cartItemRepository
-      .findByCartAndProduct(cart, product)
-      .orElse(null);
+        .findByCartAndProduct(cart, product)
+        .orElse(null);
 
     int newQuantity;
 
@@ -149,8 +199,7 @@ public class CartService {
 
     if (newQuantity > availableQuantity) {
       throw new InsufficientStockException(
-        "Only " + availableQuantity + " items available"
-      );
+          "Only " + availableQuantity + " items available");
     }
 
     // ---------------------------------------------
@@ -158,8 +207,7 @@ public class CartService {
     // ---------------------------------------------
 
     if (cartItem == null) {
-      cartItem =
-        CartItem
+      cartItem = CartItem
           .builder()
           .cart(cart)
           .product(product)
@@ -184,26 +232,24 @@ public class CartService {
 
   @Transactional
   public CartResponse updateQuantity(
-    String cartId,
-    String productId,
-    UpdateCartItemRequest request
-  ) {
+      String cartId,
+      String productId,
+      UpdateCartItemRequest request) {
     Cart cart = cartRepository
-      .findById(cartId)
-      .orElseThrow(() -> new ResourceNotFoundException("Cart not found with ID: " + cartId));
+        .findById(cartId)
+        .orElseThrow(() -> new ResourceNotFoundException("Cart not found with ID: " + cartId));
 
     Product product = productRepository
-      .findById(productId)
-      .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + productId));
+        .findById(productId)
+        .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + productId));
 
     CartItem item = cartItemRepository
-      .findByCartAndProduct(cart, product)
-      .orElseThrow(() -> 
-          new ResourceNotFoundException(
-               "Product with ID: " + productId 
-                + "not found in cart with ID: " + cartId
-          )
-      );
+        .findByCartAndProduct(cart, product)
+        .orElseThrow(() -> new ResourceNotFoundException(
+            "Product with ID: " +
+                productId +
+                "not found in cart with ID: " +
+                cartId));
 
     Integer quantity = request.getQuantity();
 
@@ -214,14 +260,12 @@ public class CartService {
     if (quantity == null || quantity <= 0) {
       cartItemRepository.delete(item);
     } else {
-      int availableQuantity =
-        product.getInventory().getQuantity() -
-        product.getInventory().getReservedQuantity();
+      int availableQuantity = product.getInventory().getQuantity() -
+          product.getInventory().getReservedQuantity();
 
       if (quantity > availableQuantity) {
         throw new InsufficientStockException(
-          "Only " + availableQuantity + " items available"
-        );
+            "Only " + availableQuantity + " items available");
       }
 
       item.setQuantity(quantity);
@@ -242,21 +286,16 @@ public class CartService {
   @Transactional
   public CartResponse removeItem(String cartId, String productId) {
     Cart cart = cartRepository
-      .findById(cartId)
-      .orElseThrow(() -> new ResourceNotFoundException("Cart not found: " + cartId)
-      );
+        .findById(cartId)
+        .orElseThrow(() -> new ResourceNotFoundException("Cart not found: " + cartId));
 
     Product product = productRepository
-      .findById(productId)
-      .orElseThrow(() ->
-        new ResourceNotFoundException("Product not found: " + productId)
-      );
+        .findById(productId)
+        .orElseThrow(() -> new ResourceNotFoundException("Product not found: " + productId));
 
     CartItem item = cartItemRepository
-      .findByCartAndProduct(cart, product)
-      .orElseThrow(() ->
-        new ResourceNotFoundException("Product not found in cart: " + productId)
-      );
+        .findByCartAndProduct(cart, product)
+        .orElseThrow(() -> new ResourceNotFoundException("Product not found in cart: " + productId));
 
     cartItemRepository.delete(item);
 
@@ -274,8 +313,8 @@ public class CartService {
   @Transactional
   public void clearCart(String cartId) {
     Cart cart = cartRepository
-      .findById(cartId)
-      .orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
+        .findById(cartId)
+        .orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
 
     cart.getItems().clear();
 
@@ -290,20 +329,20 @@ public class CartService {
 
   private CartResponse buildCartResponse(Cart cart) {
     List<CartItemResponse> items = cart
-      .getItems()
-      .stream()
-      .map(this::mapCartItem)
-      .toList();
+        .getItems()
+        .stream()
+        .map(this::mapCartItem)
+        .toList();
 
     BigDecimal itemTotal = items
-      .stream()
-      .map(CartItemResponse::getItemTotal)
-      .reduce(BigDecimal.ZERO, BigDecimal::add);
+        .stream()
+        .map(CartItemResponse::getItemTotal)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
 
     int totalItems = items
-      .stream()
-      .mapToInt(CartItemResponse::getQuantity)
-      .sum();
+        .stream()
+        .mapToInt(CartItemResponse::getQuantity)
+        .sum();
 
     // ---------------------------------------------
     // DELIVERY
@@ -324,8 +363,8 @@ public class CartService {
     // ---------------------------------------------
 
     BigDecimal handlingFee = items.isEmpty()
-      ? BigDecimal.ZERO
-      : BigDecimal.valueOf(2);
+        ? BigDecimal.ZERO
+        : BigDecimal.valueOf(2);
 
     // ---------------------------------------------
     // GRAND TOTAL
@@ -334,15 +373,15 @@ public class CartService {
     BigDecimal grandTotal = itemTotal.add(deliveryFee).add(handlingFee);
 
     return CartResponse
-      .builder()
-      .cartId(cart.getCartId())
-      .items(items)
-      .totalItems(totalItems)
-      .itemTotal(itemTotal)
-      .deliveryFee(deliveryFee)
-      .handlingFee(handlingFee)
-      .grandTotal(grandTotal)
-      .build();
+        .builder()
+        .cartId(cart.getCartId())
+        .items(items)
+        .totalItems(totalItems)
+        .itemTotal(itemTotal)
+        .deliveryFee(deliveryFee)
+        .handlingFee(handlingFee)
+        .grandTotal(grandTotal)
+        .build();
   }
 
   // =====================================================
@@ -353,24 +392,23 @@ public class CartService {
     Product product = item.getProduct();
 
     BigDecimal sellingPrice = product.getDiscountPrice() != null
-      ? product.getDiscountPrice()
-      : product.getPrice();
+        ? product.getDiscountPrice()
+        : product.getPrice();
 
     BigDecimal itemTotal = sellingPrice.multiply(
-      BigDecimal.valueOf(item.getQuantity())
-    );
+        BigDecimal.valueOf(item.getQuantity()));
 
     return CartItemResponse
-      .builder()
-      .cartItemId(item.getId())
-      .productId(product.getProductId())
-      .productName(product.getName())
-      .imageUrl(product.getImageUrl())
-      .price(product.getPrice())
-      .discountPrice(product.getDiscountPrice())
-      .unit(product.getUnit())
-      .quantity(item.getQuantity())
-      .itemTotal(itemTotal)
-      .build();
+        .builder()
+        .cartItemId(item.getId())
+        .productId(product.getProductId())
+        .productName(product.getName())
+        .imageUrl(product.getImageUrl())
+        .price(product.getPrice())
+        .discountPrice(product.getDiscountPrice())
+        .unit(product.getUnit())
+        .quantity(item.getQuantity())
+        .itemTotal(itemTotal)
+        .build();
   }
 }
