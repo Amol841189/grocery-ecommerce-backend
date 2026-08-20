@@ -244,6 +244,7 @@ public class ProductService {
 
                                         Integer quantity = product.getInventory() != null
                                                         ? product.getInventory().getQuantity()
+                                                                        - product.getInventory().getReservedQuantity()
                                                         : 0;
 
                                         // =========================================
