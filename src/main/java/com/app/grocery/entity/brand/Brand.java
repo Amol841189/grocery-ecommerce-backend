@@ -1,9 +1,13 @@
-package com.app.grocery.entity;
+package com.app.grocery.entity.brand;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.app.grocery.entity.product.Product;
+import com.app.grocery.entity.subcategory.SubCategory;
+
 import lombok.*;
 
 @Entity

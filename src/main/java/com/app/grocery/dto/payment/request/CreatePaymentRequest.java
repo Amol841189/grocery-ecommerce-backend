@@ -1,6 +1,7 @@
 package com.app.grocery.dto.payment.request;
 
-import com.app.grocery.entity.PaymentMethod;
+import com.app.grocery.entity.payment.PaymentMethod;
+
 import lombok.*;
 
 @Getter

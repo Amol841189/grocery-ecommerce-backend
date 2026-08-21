@@ -1,7 +1,8 @@
 package com.app.grocery.repository;
 
-import com.app.grocery.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.app.grocery.entity.user.User;
 
 import java.util.Optional;
 

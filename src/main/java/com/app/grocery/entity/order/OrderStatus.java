@@ -1,4 +1,4 @@
-package com.app.grocery.entity;
+package com.app.grocery.entity.order;
 
 public enum OrderStatus {
 

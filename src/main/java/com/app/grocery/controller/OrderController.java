@@ -15,21 +15,17 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class OrderController {
 
-    private final OrderService orderService;
+        private final OrderService orderService;
 
-    // =====================================================
-    // CREATE ORDER
-    // =====================================================
+        // =====================================================
+        // CREATE ORDER
+        // =====================================================
 
-    @PostMapping
-    public ResponseEntity<OrderResponse> createOrder(
-            @RequestBody CreateOrderRequest request) {
+        @PostMapping
+        public ResponseEntity<OrderResponse> createOrder(@RequestBody CreateOrderRequest request) {
 
-        OrderResponse response =
-                orderService.createOrder(request);
+                OrderResponse response = orderService.createOrder(request);
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(response);
-    }
+                return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        }
 }

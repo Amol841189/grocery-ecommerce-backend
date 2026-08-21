@@ -1,10 +1,15 @@
-package com.app.grocery.entity;
+package com.app.grocery.entity.subcategory;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.app.grocery.entity.brand.Brand;
+import com.app.grocery.entity.category.Category;
+import com.app.grocery.entity.product.Product;
+
 
 @Entity
 @Table(

@@ -1,9 +1,11 @@
-package com.app.grocery.entity;
+package com.app.grocery.entity.order;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+
+import com.app.grocery.entity.product.Product;
 
 @Entity
 @Table(name = "order_items")

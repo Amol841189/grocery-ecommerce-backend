@@ -1,10 +1,14 @@
-package com.app.grocery.entity;
+package com.app.grocery.entity.product;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
+import com.app.grocery.entity.brand.Brand;
+import com.app.grocery.entity.inventory.Inventory;
+import com.app.grocery.entity.subcategory.SubCategory;
 
 @Entity
 @Table(

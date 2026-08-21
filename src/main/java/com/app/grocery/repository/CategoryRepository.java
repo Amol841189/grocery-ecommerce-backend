@@ -1,7 +1,8 @@
 package com.app.grocery.repository;
 
-import com.app.grocery.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.app.grocery.entity.category.Category;
 
 public interface CategoryRepository extends JpaRepository<Category, String> {
 

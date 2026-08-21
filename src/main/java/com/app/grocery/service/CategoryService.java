@@ -3,7 +3,7 @@ package com.app.grocery.service;
 import com.app.grocery.dto.category.request.CategoryCreateRequest;
 import com.app.grocery.dto.category.response.CategoryCreateResponse;
 import com.app.grocery.dto.category.response.CategoryListResponse;
-import com.app.grocery.entity.Category;
+import com.app.grocery.entity.category.Category;
 import com.app.grocery.repository.CategoryRepository;
 import com.app.grocery.util.CategoryIdGenerator;
 import org.springframework.stereotype.Service;
