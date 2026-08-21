@@ -1,8 +1,8 @@
 package com.app.grocery.repository;
 
-import com.app.grocery.entity.Cart;
-import com.app.grocery.entity.CartItem;
-import com.app.grocery.entity.Product;
+import com.app.grocery.entity.cart.Cart;
+import com.app.grocery.entity.cart.CartItem;
+import com.app.grocery.entity.product.Product;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

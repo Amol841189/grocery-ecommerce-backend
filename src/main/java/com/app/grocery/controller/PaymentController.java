@@ -24,34 +24,23 @@ public class PaymentController {
         // =====================================================
 
         @PostMapping
-        public ResponseEntity<PaymentResponse> createPayment(
-                        @RequestBody CreatePaymentRequest request) {
+        public ResponseEntity<PaymentResponse> createPayment(@RequestBody CreatePaymentRequest request) {
 
                 PaymentResponse response = paymentService.createPayment((request));
-                return ResponseEntity
-                                .status(HttpStatus.CREATED)
-                                .body(response);
+                return ResponseEntity.status(HttpStatus.CREATED).body(response);
         }
 
         @PostMapping("/{paymentId}/success")
-        public ResponseEntity<PaymentResponse> markPaymentSuccess(
-                        @PathVariable String paymentId,
+        public ResponseEntity<PaymentResponse> markPaymentSuccess(@PathVariable String paymentId,
                         @RequestBody PaymentSuccessRequest request) {
 
-                return ResponseEntity.ok(
-                                paymentService.markPaymentSuccess(
-                                                paymentId,
-                                                request));
+                return ResponseEntity.ok(paymentService.markPaymentSuccess(paymentId, request));
         }
 
         @PostMapping("/{paymentId}/failed")
-        public ResponseEntity<PaymentResponse> markPaymentFailed(
-                        @PathVariable String paymentId,
+        public ResponseEntity<PaymentResponse> markPaymentFailed(@PathVariable String paymentId,
                         @RequestBody PaymentFailedRequest request) {
 
-                return ResponseEntity.ok(
-                                paymentService.markPaymentFailed(
-                                                paymentId,
-                                                request));
+                return ResponseEntity.ok(paymentService.markPaymentFailed(paymentId, request));
         }
 }

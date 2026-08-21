@@ -1,9 +1,12 @@
-package com.app.grocery.entity;
+package com.app.grocery.entity.cart;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.app.grocery.entity.user.User;
+
 import lombok.*;
 
 /**

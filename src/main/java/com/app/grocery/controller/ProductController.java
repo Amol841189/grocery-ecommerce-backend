@@ -27,11 +27,10 @@ public class ProductController {
         // =====================================================
 
         @PostMapping(consumes = "multipart/form-data")
-        public ResponseEntity<ProductResponse> createProduct(
-                        @ModelAttribute ProductCreateRequest request) throws IOException {
+        public ResponseEntity<ProductResponse> createProduct(@ModelAttribute ProductCreateRequest request)
+                        throws IOException {
 
-                return ResponseEntity.ok(
-                                productService.addProduct(request));
+                return ResponseEntity.ok(productService.addProduct(request));
         }
 
         // =====================================================
@@ -51,8 +50,7 @@ public class ProductController {
         // =====================================================
 
         @GetMapping("/{productId}")
-        public ResponseEntity<ProductResponse> getProductById(
-                        @PathVariable String productId) {
+        public ResponseEntity<ProductResponse> getProductById(@PathVariable String productId) {
 
                 ProductResponse response = productService.getProductById(productId);
 
@@ -64,11 +62,9 @@ public class ProductController {
         // =====================================================
 
         @GetMapping("/subcategory/{subCategoryId}")
-        public ResponseEntity<List<ProductListResponse>> getProductsBySubCategory(
-                        @PathVariable String subCategoryId) {
+        public ResponseEntity<List<ProductListResponse>> getProductsBySubCategory(@PathVariable String subCategoryId) {
 
-                List<ProductListResponse> products = productService.getProductsBySubCategory(
-                                subCategoryId);
+                List<ProductListResponse> products = productService.getProductsBySubCategory(subCategoryId);
 
                 return ResponseEntity.ok(products);
         }
@@ -78,8 +74,7 @@ public class ProductController {
         // =====================================================
 
         @DeleteMapping("/{productId}")
-        public ResponseEntity<ProductDeleteResponse> deleteProduct(
-                        @PathVariable String productId) {
+        public ResponseEntity<ProductDeleteResponse> deleteProduct(@PathVariable String productId) {
 
                 ProductDeleteResponse response = productService.deleteProduct(productId);
 

@@ -1,6 +1,8 @@
-package com.app.grocery.entity;
+package com.app.grocery.entity.user;
 
 import java.time.LocalDateTime;
+
+import com.app.grocery.entity.role.Role;
 
 import jakarta.persistence.*;
 import lombok.*;

@@ -29,9 +29,7 @@ public class SubCategoryController {
   // =====================================================
 
   @PostMapping
-  public ResponseEntity<SubCategoryResponse> createSubCategory(
-    @RequestBody SubCategoryCreateRequest request
-  ) {
+  public ResponseEntity<SubCategoryResponse> createSubCategory(@RequestBody SubCategoryCreateRequest request) {
     SubCategoryResponse response = subCategoryService.addSubCategory(request);
 
     return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -51,12 +49,8 @@ public class SubCategoryController {
   // =====================================================
 
   @GetMapping("/{subCategoryId}")
-  public ResponseEntity<SubCategoryResponse> getSubCategoryById(
-    @PathVariable String subCategoryId
-  ) {
-    return ResponseEntity.ok(
-      subCategoryService.getSubCategoryById(subCategoryId)
-    );
+  public ResponseEntity<SubCategoryResponse> getSubCategoryById(@PathVariable String subCategoryId) {
+    return ResponseEntity.ok(subCategoryService.getSubCategoryById(subCategoryId));
   }
 
   // =====================================================
@@ -64,12 +58,8 @@ public class SubCategoryController {
   // =====================================================
 
   @GetMapping("/category/{categoryId}")
-  public ResponseEntity<List<SubCategoryListResponse>> getSubCategoriesByCategory(
-    @PathVariable String categoryId
-  ) {
-    return ResponseEntity.ok(
-      subCategoryService.getSubCategoriesByCategory(categoryId)
-    );
+  public ResponseEntity<List<SubCategoryListResponse>> getSubCategoriesByCategory(@PathVariable String categoryId) {
+    return ResponseEntity.ok(subCategoryService.getSubCategoriesByCategory(categoryId));
   }
 
   // =====================================================
@@ -77,13 +67,9 @@ public class SubCategoryController {
   // =====================================================
 
   @PutMapping("/{subCategoryId}")
-  public ResponseEntity<SubCategoryResponse> updateSubCategory(
-    @PathVariable String subCategoryId,
-    @RequestBody SubCategoryCreateRequest request
-  ) {
-    return ResponseEntity.ok(
-      subCategoryService.updateSubCategory(subCategoryId, request)
-    );
+  public ResponseEntity<SubCategoryResponse> updateSubCategory(@PathVariable String subCategoryId,
+      @RequestBody SubCategoryCreateRequest request) {
+    return ResponseEntity.ok(subCategoryService.updateSubCategory(subCategoryId, request));
   }
 
   // =====================================================
@@ -91,9 +77,7 @@ public class SubCategoryController {
   // =====================================================
 
   @DeleteMapping("/{subCategoryId}")
-  public ResponseEntity<Void> deleteSubCategory(
-    @PathVariable String subCategoryId
-  ) {
+  public ResponseEntity<Void> deleteSubCategory(@PathVariable String subCategoryId) {
     subCategoryService.deleteSubCategory(subCategoryId);
 
     return ResponseEntity.noContent().build();

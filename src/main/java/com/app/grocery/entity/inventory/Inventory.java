@@ -1,4 +1,6 @@
-package com.app.grocery.entity;
+package com.app.grocery.entity.inventory;
+
+import com.app.grocery.entity.product.Product;
 
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,4 +1,4 @@
-package com.app.grocery.entity;
+package com.app.grocery.entity.order;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -7,6 +7,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.app.grocery.entity.user.User;
 
 @Entity
 @Table(name = "orders")

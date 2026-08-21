@@ -1,7 +1,8 @@
 package com.app.grocery.repository;
 
-import com.app.grocery.entity.SubCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.app.grocery.entity.subcategory.SubCategory;
 
 import java.util.List;
 

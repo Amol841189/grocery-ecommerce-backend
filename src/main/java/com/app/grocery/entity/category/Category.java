@@ -1,4 +1,4 @@
-package com.app.grocery.entity;
+package com.app.grocery.entity.category;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -6,6 +6,8 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.app.grocery.entity.subcategory.SubCategory;
 
 @Entity
 @Table(name = "categories")

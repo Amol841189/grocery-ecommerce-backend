@@ -20,15 +20,11 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserResponse> createUser(
-            @RequestBody UserCreateRequest request
-    ) {
+    public ResponseEntity<UserResponse> createUser(@RequestBody UserCreateRequest request) {
 
         UserResponse response = userService.createUser(request);
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping

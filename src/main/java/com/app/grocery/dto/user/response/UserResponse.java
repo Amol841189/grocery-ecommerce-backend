@@ -1,6 +1,6 @@
 package com.app.grocery.dto.user.response;
 
-import com.app.grocery.entity.Role;
+import com.app.grocery.entity.role.Role;
 
 public record UserResponse(
         String userId,

@@ -1,4 +1,4 @@
-package com.app.grocery.entity;
+package com.app.grocery.entity.payment;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -6,6 +6,8 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
+
+import com.app.grocery.entity.order.Order;
 
 @Entity
 @Table(name = "payments")

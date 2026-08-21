@@ -1,9 +1,10 @@
 package com.app.grocery.repository;
 
-import com.app.grocery.entity.Product;
 import java.util.Optional;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.app.grocery.entity.product.Product;
 
 public interface ProductRepository extends JpaRepository<Product, String> {
   boolean existsByNameIgnoreCaseAndBrand_BrandIdAndSubCategory_SubCategoryId(

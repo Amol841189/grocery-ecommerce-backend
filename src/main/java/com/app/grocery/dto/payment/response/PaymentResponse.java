@@ -1,11 +1,12 @@
 package com.app.grocery.dto.payment.response;
 
-import com.app.grocery.entity.PaymentMethod;
-import com.app.grocery.entity.PaymentStatus;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
+import com.app.grocery.entity.payment.PaymentMethod;
+import com.app.grocery.entity.payment.PaymentStatus;
 
 @Getter
 @Setter

@@ -26,9 +26,7 @@ public class CartController {
 
   @PostMapping
   public ResponseEntity<CartResponse> createCart(@RequestBody CreateCartRequest request) {
-    return ResponseEntity
-        .status(HttpStatus.CREATED)
-        .body(cartService.createCart(request.userId()));
+    return ResponseEntity.status(HttpStatus.CREATED).body(cartService.createCart(request.userId()));
   }
 
   // =====================================================
@@ -50,14 +48,9 @@ public class CartController {
   // =====================================================
 
   @PostMapping("/items")
-  public ResponseEntity<CartResponse> addToCart(
-      @RequestParam String userId,
-      @RequestBody AddToCartRequest request
-  ) {
+  public ResponseEntity<CartResponse> addToCart(@RequestParam String userId, @RequestBody AddToCartRequest request) {
 
-      return ResponseEntity.ok(
-          cartService.addToCart(userId, request)
-      );
+    return ResponseEntity.ok(cartService.addToCart(userId, request));
   }
 
   // =====================================================
@@ -65,11 +58,8 @@ public class CartController {
   // =====================================================
 
   @PutMapping("/{cartId}/items/{productId}")
-  public ResponseEntity<CartResponse> updateQuantity(
-    @PathVariable String cartId,
-    @PathVariable String productId,
-    @RequestBody UpdateCartItemRequest request
-  ) {
+  public ResponseEntity<CartResponse> updateQuantity(@PathVariable String cartId, @PathVariable String productId,
+      @RequestBody UpdateCartItemRequest request) {
 
     System.out.println("PUT http://localhost:8081/" + cartId + "/items/" + productId);
     System.out.println("========== UPDATE QUANTITY API ==========");
@@ -89,10 +79,7 @@ public class CartController {
   // =====================================================
 
   @DeleteMapping("/{cartId}/items/{productId}")
-  public ResponseEntity<CartResponse> removeItem(
-    @PathVariable String cartId,
-    @PathVariable String productId
-  ) {
+  public ResponseEntity<CartResponse> removeItem(@PathVariable String cartId, @PathVariable String productId) {
     return ResponseEntity.ok(cartService.removeItem(cartId, productId));
   }
 

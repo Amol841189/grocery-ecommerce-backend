@@ -3,243 +3,147 @@ package com.app.grocery.service;
 import com.app.grocery.dto.brand.request.BrandCreateRequest;
 import com.app.grocery.dto.brand.response.BrandListResponse;
 import com.app.grocery.dto.brand.response.BrandResponse;
-import com.app.grocery.entity.Brand;
-import com.app.grocery.entity.SubCategory;
+import com.app.grocery.entity.brand.Brand;
+import com.app.grocery.entity.subcategory.SubCategory;
 import com.app.grocery.repository.BrandRepository;
 import com.app.grocery.repository.SubCategoryRepository;
 import com.app.grocery.util.BrandIdGenerator;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class BrandService {
 
-    private final BrandRepository brandRepository;
-    private final SubCategoryRepository subCategoryRepository;
+  private final BrandRepository brandRepository;
+  private final SubCategoryRepository subCategoryRepository;
 
-    public BrandService(
-            BrandRepository brandRepository,
-            SubCategoryRepository subCategoryRepository
-    ) {
-        this.brandRepository = brandRepository;
-        this.subCategoryRepository = subCategoryRepository;
+  public BrandService(
+    BrandRepository brandRepository,
+    SubCategoryRepository subCategoryRepository
+  ) {
+    this.brandRepository = brandRepository;
+    this.subCategoryRepository = subCategoryRepository;
+  }
+
+  // =====================================================
+  // ADD BRAND
+  // =====================================================
+
+  public BrandResponse addBrand(BrandCreateRequest request) {
+    if (brandRepository.existsByNameIgnoreCase(request.getName())) {
+      throw new RuntimeException("Brand already exists");
     }
 
+    LocalDateTime now = LocalDateTime.now();
 
-    // =====================================================
-    // ADD BRAND
-    // =====================================================
+    Brand brand = Brand
+      .builder()
+      .brandId(BrandIdGenerator.generate())
+      .name(request.getName())
+      .description(request.getDescription())
+      .createdAt(now)
+      .updatedAt(now)
+      .build();
 
-    public BrandResponse addBrand(
-            BrandCreateRequest request
-    ) {
+    Brand savedBrand = brandRepository.save(brand);
 
-        if (brandRepository.existsByNameIgnoreCase(
-                request.getName()
-        )) {
+    return BrandResponse
+      .builder()
+      .brandId(savedBrand.getBrandId())
+      .name(savedBrand.getName())
+      .description(savedBrand.getDescription())
+      .createdAt(savedBrand.getCreatedAt())
+      .updatedAt(savedBrand.getUpdatedAt())
+      .build();
+  }
 
-            throw new RuntimeException(
-                    "Brand already exists"
-            );
-        }
+  // =====================================================
+  // GET ALL BRANDS
+  // =====================================================
 
-        LocalDateTime now =
-                LocalDateTime.now();
+  @Transactional(readOnly = true)
+  public List<BrandListResponse> getAllBrands() {
+    return brandRepository
+      .findAll()
+      .stream()
+      .map(brand -> new BrandListResponse(brand.getBrandId(), brand.getName()))
+      .toList();
+  }
 
-        Brand brand = Brand.builder()
+  // =====================================================
+  // GET BRANDS BY SUBCATEGORY
+  // =====================================================
 
-                .brandId(
-                        BrandIdGenerator.generate()
-                )
+  @Transactional(readOnly = true)
+  public List<BrandListResponse> getBrandsBySubCategory(String subCategoryId) {
+    // -----------------------------------------------
+    // CHECK SUBCATEGORY EXISTS
+    // -----------------------------------------------
 
-                .name(
-                        request.getName()
-                )
-
-                .description(
-                        request.getDescription()
-                )
-
-                .createdAt(now)
-
-                .updatedAt(now)
-
-                .build();
-
-        Brand savedBrand =
-                brandRepository.save(brand);
-
-        return BrandResponse.builder()
-
-                .brandId(
-                        savedBrand.getBrandId()
-                )
-
-                .name(
-                        savedBrand.getName()
-                )
-
-                .description(
-                        savedBrand.getDescription()
-                )
-
-                .createdAt(
-                        savedBrand.getCreatedAt()
-                )
-
-                .updatedAt(
-                        savedBrand.getUpdatedAt()
-                )
-
-                .build();
+    if (!subCategoryRepository.existsById(subCategoryId)) {
+      throw new RuntimeException("Subcategory not found: " + subCategoryId);
     }
 
+    // -----------------------------------------------
+    // GET BRANDS
+    // -----------------------------------------------
 
-    // =====================================================
-    // GET ALL BRANDS
-    // =====================================================
+    return brandRepository
+      .findBrandsBySubCategory(subCategoryId)
+      .stream()
+      .map(brand -> new BrandListResponse(brand.getBrandId(), brand.getName()))
+      .toList();
+  }
 
-    @Transactional(readOnly = true)
-    public List<BrandListResponse> getAllBrands() {
+  // =====================================================
+  // ASSIGN BRAND TO SUBCATEGORY
+  // =====================================================
 
-        return brandRepository
-                .findAll()
+  @Transactional
+  public BrandListResponse assignBrandToSubCategory(
+    String brandId,
+    String subCategoryId
+  ) {
+    // -----------------------------------------------
+    // FIND BRAND
+    // -----------------------------------------------
 
-                .stream()
+    Brand brand = brandRepository
+      .findById(brandId)
+      .orElseThrow(() -> new RuntimeException("Brand not found: " + brandId));
 
-                .map(brand ->
-                        new BrandListResponse(
-                                brand.getBrandId(),
-                                brand.getName()
-                        )
-                )
+    // -----------------------------------------------
+    // FIND SUBCATEGORY
+    // -----------------------------------------------
 
-                .toList();
+    SubCategory subCategory = subCategoryRepository
+      .findById(subCategoryId)
+      .orElseThrow(() ->
+        new RuntimeException("Subcategory not found: " + subCategoryId)
+      );
+
+    // -----------------------------------------------
+    // ASSIGN
+    // -----------------------------------------------
+
+    if (!brand.getSubCategories().contains(subCategory)) {
+      brand.getSubCategories().add(subCategory);
     }
 
+    // -----------------------------------------------
+    // UPDATE TIME
+    // -----------------------------------------------
 
-    // =====================================================
-    // GET BRANDS BY SUBCATEGORY
-    // =====================================================
+    brand.setUpdatedAt(LocalDateTime.now());
 
-    @Transactional(readOnly = true)
-    public List<BrandListResponse>
-    getBrandsBySubCategory(
-            String subCategoryId
-    ) {
+    // -----------------------------------------------
+    // SAVE
+    // -----------------------------------------------
 
-        // -----------------------------------------------
-        // CHECK SUBCATEGORY EXISTS
-        // -----------------------------------------------
+    Brand savedBrand = brandRepository.save(brand);
 
-        if (!subCategoryRepository
-                .existsById(subCategoryId)) {
-
-            throw new RuntimeException(
-                    "Subcategory not found: "
-                    + subCategoryId
-            );
-        }
-
-
-        // -----------------------------------------------
-        // GET BRANDS
-        // -----------------------------------------------
-
-        return brandRepository
-                .findBrandsBySubCategory(
-                        subCategoryId
-                )
-
-                .stream()
-
-                .map(brand ->
-                        new BrandListResponse(
-                                brand.getBrandId(),
-                                brand.getName()
-                        )
-                )
-
-                .toList();
-    }
-
-
-    // =====================================================
-    // ASSIGN BRAND TO SUBCATEGORY
-    // =====================================================
-
-    @Transactional
-    public BrandListResponse
-    assignBrandToSubCategory(
-            String brandId,
-            String subCategoryId
-    ) {
-
-        // -----------------------------------------------
-        // FIND BRAND
-        // -----------------------------------------------
-
-        Brand brand =
-                brandRepository
-                        .findById(brandId)
-                        .orElseThrow(() ->
-                                new RuntimeException(
-                                        "Brand not found: "
-                                        + brandId
-                                )
-                        );
-
-
-        // -----------------------------------------------
-        // FIND SUBCATEGORY
-        // -----------------------------------------------
-
-        SubCategory subCategory =
-                subCategoryRepository
-                        .findById(subCategoryId)
-                        .orElseThrow(() ->
-                                new RuntimeException(
-                                        "Subcategory not found: "
-                                        + subCategoryId
-                                )
-                        );
-
-
-        // -----------------------------------------------
-        // ASSIGN
-        // -----------------------------------------------
-
-        if (!brand.getSubCategories()
-                .contains(subCategory)) {
-
-            brand.getSubCategories()
-                    .add(subCategory);
-        }
-
-
-        // -----------------------------------------------
-        // UPDATE TIME
-        // -----------------------------------------------
-
-        brand.setUpdatedAt(
-                LocalDateTime.now()
-        );
-
-
-        // -----------------------------------------------
-        // SAVE
-        // -----------------------------------------------
-
-        Brand savedBrand =
-                brandRepository.save(brand);
-
-
-        return new BrandListResponse(
-                savedBrand.getBrandId(),
-                savedBrand.getName()
-        );
-    }
+    return new BrandListResponse(savedBrand.getBrandId(), savedBrand.getName());
+  }
 }

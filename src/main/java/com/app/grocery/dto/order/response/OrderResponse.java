@@ -1,7 +1,8 @@
 package com.app.grocery.dto.order.response;
 
 import com.app.grocery.dto.order.response.OrderItemResponse;
-import com.app.grocery.entity.OrderStatus;
+import com.app.grocery.entity.order.OrderStatus;
+
 import lombok.*;
 
 import java.math.BigDecimal;
