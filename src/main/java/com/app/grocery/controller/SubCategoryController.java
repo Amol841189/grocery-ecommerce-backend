@@ -1,8 +1,8 @@
 package com.app.grocery.controller;
 
-import com.app.grocery.dto.SubCategoryCreateRequest;
-import com.app.grocery.dto.SubCategoryListResponse;
-import com.app.grocery.dto.SubCategoryResponse;
+import com.app.grocery.dto.subcategory.request.SubCategoryCreateRequest;
+import com.app.grocery.dto.subcategory.response.SubCategoryListResponse;
+import com.app.grocery.dto.subcategory.response.SubCategoryResponse;
 import com.app.grocery.service.SubCategoryService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

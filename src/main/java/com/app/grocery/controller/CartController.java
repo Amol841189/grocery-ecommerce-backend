@@ -1,9 +1,9 @@
 package com.app.grocery.controller;
 
-import com.app.grocery.dto.AddToCartRequest;
-import com.app.grocery.dto.CartResponse;
-import com.app.grocery.dto.CreateCartRequest;
-import com.app.grocery.dto.UpdateCartItemRequest;
+import com.app.grocery.dto.cart.request.AddToCartRequest;
+import com.app.grocery.dto.cart.request.CreateCartRequest;
+import com.app.grocery.dto.cart.request.UpdateCartItemRequest;
+import com.app.grocery.dto.cart.response.CartResponse;
 import com.app.grocery.service.CartService;
 
 import org.springframework.http.HttpStatus;

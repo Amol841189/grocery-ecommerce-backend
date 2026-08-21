@@ -1,7 +1,7 @@
 package com.app.grocery.service;
 
-import com.app.grocery.dto.UserCreateRequest;
-import com.app.grocery.dto.UserResponse;
+import com.app.grocery.dto.user.request.UserCreateRequest;
+import com.app.grocery.dto.user.response.UserResponse;
 import com.app.grocery.entity.Role;
 import com.app.grocery.entity.User;
 import com.app.grocery.repository.UserRepository;

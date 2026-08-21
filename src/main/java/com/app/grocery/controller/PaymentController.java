@@ -1,9 +1,9 @@
 package com.app.grocery.controller;
 
-import com.app.grocery.dto.CreatePaymentRequest;
-import com.app.grocery.dto.PaymentFailedRequest;
-import com.app.grocery.dto.PaymentResponse;
-import com.app.grocery.dto.PaymentSuccessRequest;
+import com.app.grocery.dto.payment.request.CreatePaymentRequest;
+import com.app.grocery.dto.payment.request.PaymentFailedRequest;
+import com.app.grocery.dto.payment.request.PaymentSuccessRequest;
+import com.app.grocery.dto.payment.response.PaymentResponse;
 import com.app.grocery.service.PaymentService;
 
 import lombok.RequiredArgsConstructor;

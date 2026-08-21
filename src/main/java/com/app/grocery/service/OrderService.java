@@ -1,8 +1,8 @@
 package com.app.grocery.service;
 
-import com.app.grocery.dto.CreateOrderRequest;
-import com.app.grocery.dto.OrderItemResponse;
-import com.app.grocery.dto.OrderResponse;
+import com.app.grocery.dto.order.request.CreateOrderRequest;
+import com.app.grocery.dto.order.response.OrderItemResponse;
+import com.app.grocery.dto.order.response.OrderResponse;
 import com.app.grocery.entity.Cart;
 import com.app.grocery.entity.CartItem;
 import com.app.grocery.entity.Order;

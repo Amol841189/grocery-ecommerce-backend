@@ -1,8 +1,8 @@
 package com.app.grocery.service;
 
-import com.app.grocery.dto.BrandCreateRequest;
-import com.app.grocery.dto.BrandResponse;
-import com.app.grocery.dto.BrandListResponse;
+import com.app.grocery.dto.brand.request.BrandCreateRequest;
+import com.app.grocery.dto.brand.response.BrandListResponse;
+import com.app.grocery.dto.brand.response.BrandResponse;
 import com.app.grocery.entity.Brand;
 import com.app.grocery.entity.SubCategory;
 import com.app.grocery.repository.BrandRepository;

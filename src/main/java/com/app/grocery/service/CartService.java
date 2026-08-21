@@ -1,9 +1,9 @@
 package com.app.grocery.service;
 
-import com.app.grocery.dto.AddToCartRequest;
-import com.app.grocery.dto.CartItemResponse;
-import com.app.grocery.dto.CartResponse;
-import com.app.grocery.dto.UpdateCartItemRequest;
+import com.app.grocery.dto.cart.request.AddToCartRequest;
+import com.app.grocery.dto.cart.request.UpdateCartItemRequest;
+import com.app.grocery.dto.cart.response.CartItemResponse;
+import com.app.grocery.dto.cart.response.CartResponse;
 import com.app.grocery.entity.Cart;
 import com.app.grocery.entity.CartItem;
 import com.app.grocery.entity.Product;

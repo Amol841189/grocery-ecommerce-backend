@@ -1,8 +1,8 @@
 package com.app.grocery.service;
 
-import com.app.grocery.dto.SubCategoryCreateRequest;
-import com.app.grocery.dto.SubCategoryListResponse;
-import com.app.grocery.dto.SubCategoryResponse;
+import com.app.grocery.dto.subcategory.request.SubCategoryCreateRequest;
+import com.app.grocery.dto.subcategory.response.SubCategoryListResponse;
+import com.app.grocery.dto.subcategory.response.SubCategoryResponse;
 import com.app.grocery.entity.Category;
 import com.app.grocery.entity.SubCategory;
 import com.app.grocery.util.SubCategoryIdGenerator;
@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class SubCategoryService {

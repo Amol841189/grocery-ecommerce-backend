@@ -1,7 +1,7 @@
 package com.app.grocery.controller;
 
-import com.app.grocery.dto.CreateOrderRequest;
-import com.app.grocery.dto.OrderResponse;
+import com.app.grocery.dto.order.request.CreateOrderRequest;
+import com.app.grocery.dto.order.response.OrderResponse;
 import com.app.grocery.service.OrderService;
 
 import lombok.RequiredArgsConstructor;
