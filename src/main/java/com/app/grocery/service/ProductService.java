@@ -1,9 +1,9 @@
 package com.app.grocery.service;
 
-import com.app.grocery.dto.ProductCreateRequest;
-import com.app.grocery.dto.ProductDeleteResponse;
-import com.app.grocery.dto.ProductListResponse;
-import com.app.grocery.dto.ProductResponse;
+import com.app.grocery.dto.product.request.ProductCreateRequest;
+import com.app.grocery.dto.product.response.ProductDeleteResponse;
+import com.app.grocery.dto.product.response.ProductListResponse;
+import com.app.grocery.dto.product.response.ProductResponse;
 import com.app.grocery.entity.*;
 import com.app.grocery.exception.ProductAlreadyExistsException;
 import com.app.grocery.repository.*;

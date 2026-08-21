@@ -1,8 +1,8 @@
 package com.app.grocery.controller;
 
-import com.app.grocery.dto.CategoryCreateRequest;
-import com.app.grocery.dto.CategoryCreateResponse;
-import com.app.grocery.dto.CategoryListResponse;
+import com.app.grocery.dto.category.request.CategoryCreateRequest;
+import com.app.grocery.dto.category.response.CategoryCreateResponse;
+import com.app.grocery.dto.category.response.CategoryListResponse;
 import com.app.grocery.service.CategoryService;
 import java.util.List;
 import org.springframework.http.HttpStatus;
