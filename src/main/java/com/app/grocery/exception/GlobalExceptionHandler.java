@@ -1,8 +1,7 @@
 package com.app.grocery.exception;
 
 import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
-import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,57 +10,65 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-  // =====================================================
-  // PRODUCT ALREADY EXISTS
-  // =====================================================
+    // =====================================================
+    // PRODUCT ALREADY EXISTS
+    // =====================================================
 
-  @ExceptionHandler(ProductAlreadyExistsException.class)
-  public ResponseEntity<Map<String, Object>> handleProductAlreadyExists(
-    ProductAlreadyExistsException ex
-  ) {
-    Map<String, Object> response = new LinkedHashMap<>();
+    @ExceptionHandler(ProductAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleProductAlreadyExists(
+            ProductAlreadyExistsException ex) {
 
-    response.put("timestamp", LocalDateTime.now());
+        ErrorResponse response = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.CONFLICT.value(),
+                "Product Already Exists",
+                ex.getMessage()
+        );
 
-    response.put("status", HttpStatus.CONFLICT.value());
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(response);
+    }
 
-    response.put("error", "Product Already Exists");
+    // =====================================================
+    // RESOURCE NOT FOUND
+    // =====================================================
 
-    response.put("message", ex.getMessage());
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleResourceNotFound(
+            ResourceNotFoundException ex) {
 
-    return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
-  }
+        ErrorResponse response = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND.value(),
+                "Resource Not Found",
+                ex.getMessage()
+        );
 
-  // =====================================================
-  // RESOURCE NOT FOUND
-  // =====================================================
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(response);
+    }
 
-  @ExceptionHandler(ResourceNotFoundException.class)
-  public ResponseEntity<Map<String, Object>> handleCartNotFound(
-    ResourceNotFoundException ex
-  ) {
-    Map<String, Object> response = new LinkedHashMap<>();
+    // =====================================================
+    // INSUFFICIENT STOCK
+    // =====================================================
 
-    response.put("timestamp", LocalDateTime.now());
+    @ExceptionHandler(InsufficientStockException.class)
+    public ResponseEntity<ErrorResponse> handleInsufficientStock(
+            InsufficientStockException ex) {
 
-    response.put("status", HttpStatus.NOT_FOUND.value());
+        ErrorResponse response = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.CONFLICT.value(),
+                "Insufficient Stock",
+                ex.getMessage()
+        );
 
-    response.put("error", "Resource Not Found");
+        System.out.println("Response :---> " + response.getError());
 
-    response.put("message", ex.getMessage());
-
-    System.out.println(ex.getMessage());
-
-    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-  }
-
-  // =====================================================
-  // FOR INSUFFICIENT STOCK
-  // =====================================================
-  @ExceptionHandler(InsufficientStockException.class)
-  public ResponseEntity<String> handleInsufficientStock(
-    InsufficientStockException ex
-  ) {
-    return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
-  }
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(response);
+    }
 }

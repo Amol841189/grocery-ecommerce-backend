@@ -40,7 +40,7 @@ public class CartController {
 
   @GetMapping("/uid/{userId}")
   public ResponseEntity<CartResponse> getCartByUserId(@PathVariable String userId) {
-    return ResponseEntity.ok(cartService.getCartByCartId(userId));
+    return ResponseEntity.ok(cartService.getCartByUserId(userId));
   }
 
   // =====================================================
@@ -66,7 +66,7 @@ public class CartController {
     System.out.println("cartId     : " + cartId);
     System.out.println("productId  : " + productId);
     System.out.println("quantity   : " + request.getQuantity());
-
+    
     CartResponse response = cartService.updateQuantity(cartId, productId, request);
 
     System.out.println("========== API COMPLETED ==========");

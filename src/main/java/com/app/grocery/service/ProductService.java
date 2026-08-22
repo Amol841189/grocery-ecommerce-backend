@@ -4,7 +4,6 @@ import com.app.grocery.dto.product.request.ProductCreateRequest;
 import com.app.grocery.dto.product.response.ProductDeleteResponse;
 import com.app.grocery.dto.product.response.ProductListResponse;
 import com.app.grocery.dto.product.response.ProductResponse;
-import com.app.grocery.entity.*;
 import com.app.grocery.entity.brand.Brand;
 import com.app.grocery.entity.category.Category;
 import com.app.grocery.entity.inventory.Inventory;
